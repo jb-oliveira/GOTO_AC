@@ -2,7 +2,7 @@ name: Copilot PR Reviewer
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize]
 
 permissions:
   contents: write
@@ -46,5 +46,5 @@ jobs:
 
             git add .
             git commit -m "Copilot fixes [skip ci]"
-            git push
+            git push origin HEAD:${{ github.head_ref }}
           fi
