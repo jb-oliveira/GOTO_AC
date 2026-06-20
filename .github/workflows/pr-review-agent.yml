@@ -1,0 +1,50 @@
+name: Copilot PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install Copilot CLI
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+          curl -fsSL https://gh.io/copilot-install | bash
+      
+      - name: Authenticate and Execute
+        env:
+          PAT: ${{ secrets.COPILOT_PAT }}
+        run: | 
+          echo "${PAT}" | gh auth login --with-token
+
+          cat .github/agents/pr-agent.md > prompt.txt
+
+          echo "=== PR DIFF ===" >> prompt.txt
+
+          git diff origin/${{ github.base_ref }}...HEAD >> prompt.txt
+
+          copilot --allow-all-tools --no-ask-user < prompt.txt
+
+      - name: Commit changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+            git add .
+            git commit -m "Copilot fixes [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
