@@ -1,0 +1,165 @@
+---
+name: pr-agent
+description: Reads PR diff, scans changed files for bad code, applies safe fixes, and commits
+tools: ["read", "edit", "search", "write"]  
+---
+
+You are a specialized GitHub Copilot Agent for automated PR cleanup.
+
+Your task is to read the pull request diff, scan only changed files for bad code patterns, apply safe fixes, and write a summary file review.txt.
+
+Execution flow:
+
+1. Read the PR code diff and extract the set of changed files.
+2. Limit work strictly to files changed in the PR diff.
+3. For each changed file, scan for bad code patterns and fix only issues you can correct with high confidence.
+4. write the summary in file review.txt.
+
+Bad code patterns to target (priority):
+
+1. Null-safety issues in Java code that can cause obvious NullPointerException risk.
+2. Unsafe string comparison using == or != instead of .equals/.equalsIgnoreCase where clearly appropriate.
+3. Obvious dead or commented-out executable code blocks that reduce clarity.
+4. Straightforward defensive checks around collection access/iteration when nullability is apparent.
+5. Small, local cleanup that does not alter public behavior.
+
+Safety boundaries (must follow):
+
+1. Do not edit files that are not in the PR diff.
+2. Do not perform broad refactors or architecture changes.
+3. Do not add new dependencies, tools, or CI steps.
+4. Do not rewrite large sections when a small fix is possible.
+=== PR DIFF ===
+diff --git a/.github/agents/pr-agent.md b/.github/agents/pr-agent.md
+new file mode 100644
+index 0000000..2054314
+--- /dev/null
++++ b/.github/agents/pr-agent.md
+@@ -0,0 +1,31 @@
++---
++name: pr-agent
++description: Reads PR diff, scans changed files for bad code, applies safe fixes, and commits
++tools: ["read", "edit", "search", "write"]  
++---
++
++You are a specialized GitHub Copilot Agent for automated PR cleanup.
++
++Your task is to read the pull request diff, scan only changed files for bad code patterns, apply safe fixes, and write a summary file review.txt.
++
++Execution flow:
++
++1. Read the PR code diff and extract the set of changed files.
++2. Limit work strictly to files changed in the PR diff.
++3. For each changed file, scan for bad code patterns and fix only issues you can correct with high confidence.
++4. write the summary in file review.txt.
++
++Bad code patterns to target (priority):
++
++1. Null-safety issues in Java code that can cause obvious NullPointerException risk.
++2. Unsafe string comparison using == or != instead of .equals/.equalsIgnoreCase where clearly appropriate.
++3. Obvious dead or commented-out executable code blocks that reduce clarity.
++4. Straightforward defensive checks around collection access/iteration when nullability is apparent.
++5. Small, local cleanup that does not alter public behavior.
++
++Safety boundaries (must follow):
++
++1. Do not edit files that are not in the PR diff.
++2. Do not perform broad refactors or architecture changes.
++3. Do not add new dependencies, tools, or CI steps.
++4. Do not rewrite large sections when a small fix is possible.
+diff --git a/.github/workflows/pr-review-agent.yml b/.github/workflows/pr-review-agent.yml
+new file mode 100644
+index 0000000..97f06f9
+--- /dev/null
++++ b/.github/workflows/pr-review-agent.yml
+@@ -0,0 +1,50 @@
++name: Copilot PR Reviewer
++
++on:
++  pull_request:
++    types: [opened, synchronize]
++
++permissions:
++  contents: write
++  pull-requests: write
++
++jobs:
++  review:
++    runs-on: ubuntu-latest
++    if: github.actor != 'github-actions[bot]'
++
++    steps:
++      - uses: actions/checkout@v5
++        with:
++          fetch-depth: 0
++
++      - name: Install Copilot CLI
++        run: |
++          sudo apt update
++          sudo apt install gh -y
++          curl -fsSL https://gh.io/copilot-install | bash
++      
++      - name: Authenticate and Execute
++        env:
++          PAT: ${{ secrets.COPILOT_PAT }}
++        run: | 
++          echo "${PAT}" | gh auth login --with-token
++
++          cat .github/agents/pr-agent.md > prompt.txt
++
++          echo "=== PR DIFF ===" >> prompt.txt
++
++          git diff origin/${{ github.base_ref }}...HEAD >> prompt.txt
++
++          copilot --allow-all-tools --no-ask-user < prompt.txt
++
++      - name: Commit changes
++        run: |
++          if [[ -n "$(git status --porcelain)" ]]; then
++            git config user.name "github-actions[bot]"
++            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
++
++            git add .
++            git commit -m "Copilot fixes [skip ci]"
++            git push origin HEAD:${{ github.head_ref }}
++          fi
+\ No newline at end of file
+diff --git a/src/main/java/org/example/Main.java b/src/main/java/org/example/Main.java
+index 1bb4bf0..5189c2e 100644
+--- a/src/main/java/org/example/Main.java
++++ b/src/main/java/org/example/Main.java
+@@ -3,6 +3,34 @@ package org.example;
+ //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+ // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+ public class Main {
++
++    public static int sum(int a, int b) {
++        return a + b;
++    }
++
++    public static void NullPointer() {
++        String str = null;
++        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
++        // to see how IntelliJ IDEA suggests fixing it.
++        IO.println(str.length());
++    }
++
++    public static void ArrayIndexOutOfBounds() {
++        int[] arr = new int[5];
++        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
++        // to see how IntelliJ IDEA suggests fixing it.
++        IO.println(arr[10]);
++    }
++
++    public static void ArithmeticException() {  
++        int a = 10;
++        int b = 0;
++        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
++        // to see how IntelliJ IDEA suggests fixing it.
++        IO.println(a / b);
++    }
++
++
+     static void main() {
+         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
+         // to see how IntelliJ IDEA suggests fixing it.

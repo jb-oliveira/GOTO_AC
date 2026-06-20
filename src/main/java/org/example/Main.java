@@ -12,22 +12,29 @@ public class Main {
         String str = null;
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(str.length());
+        if (str != null) {
+            IO.println(str.length());
+        }
     }
 
     public static void ArrayIndexOutOfBounds() {
         int[] arr = new int[5];
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(arr[10]);
+        int index = 10;
+        if (index < arr.length) {
+            IO.println(arr[index]);
+        }
     }
 
-    public static void ArithmeticException() {  
+    public static void ArithmeticException() {
         int a = 10;
         int b = 0;
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(a / b);
+        if (b != 0) {
+            IO.println(a / b);
+        }
     }
 
 
