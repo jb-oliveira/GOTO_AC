@@ -10,7 +10,9 @@ public class Main {
 
     public static void putaquePariu(int a, int b) {
         String str = null;
-        IO.println(str.length());        
+        if (str != null) {
+            IO.println(str.length());
+        }
     }
 
     static void main() {
