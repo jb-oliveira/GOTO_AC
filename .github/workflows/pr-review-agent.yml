@@ -30,13 +30,13 @@ jobs:
         run: | 
           echo "${PAT}" | gh auth login --with-token
 
-          cat .github/agents/pr-agent.md > prompt.txt
+          prompt=$({
+            cat .github/agents/pr-agent.md
+            echo "=== PR DIFF ==="
+            git diff origin/${{ github.base_ref }}...HEAD
+          })
 
-          echo "=== PR DIFF ===" >> prompt.txt
-
-          git diff origin/${{ github.base_ref }}...HEAD >> prompt.txt
-
-          copilot --allow-all-tools --no-ask-user < prompt.txt
+          printf '%s' "$prompt" | copilot --allow-all-tools --no-ask-user
 
       - name: Commit changes
         run: |
