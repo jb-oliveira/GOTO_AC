@@ -1,0 +1,39 @@
+PR Review Summary
+=================
+Date: 2026-06-20
+
+Files Changed in PR
+-------------------
+1. .github/agents/pr-agent.md          — New file (agent config, no code issues)
+2. .github/workflows/pr-review-agent.yml — New file (workflow, see note below)
+3. src/main/java/org/example/Main.java  — Fixed (3 issues)
+
+Fixes Applied — src/main/java/org/example/Main.java
+-----------------------------------------------------
+
+1. NullPointerException — NullPointer()
+   BEFORE: String str = null; IO.println(str.length());
+   AFTER:  Added null-check guard: `if (str != null)` before calling str.length().
+   Reason: str is explicitly assigned null; calling .length() on it always throws NPE.
+
+2. ArrayIndexOutOfBoundsException — ArrayIndexOutOfBounds()
+   BEFORE: int[] arr = new int[5]; IO.println(arr[10]);
+   AFTER:  Extracted index into variable and added bounds check: `if (index < arr.length)`.
+   Reason: Array size is 5 but index 10 is always out of bounds.
+
+3. ArithmeticException (divide-by-zero) — ArithmeticException()
+   BEFORE: int b = 0; IO.println(a / b);
+   AFTER:  Added divisor check: `if (b != 0)` before performing division.
+   Reason: b is explicitly 0; integer division by zero always throws ArithmeticException.
+
+Notes (not fixed — outside safe-fix scope)
+------------------------------------------
+- .github/workflows/pr-review-agent.yml references `actions/checkout@v5`, which does not
+  currently exist (latest stable is v4). This should be updated manually to avoid workflow
+  failures, but was not auto-fixed as it is a workflow configuration concern.
+
+No Other Issues Found
+---------------------
+- No unsafe string comparisons (== / !=) on String objects detected.
+- No dead or commented-out executable code blocks beyond IntelliJ IDE tips (intentional).
+- No null-unsafe collection iteration in changed code.
