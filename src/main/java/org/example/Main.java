@@ -8,20 +8,19 @@ public class Main {
         return a + b;
     }
 
-    public static void VeryBadMethod() {
+    public static void veryBadMethod() {
         String value = null;
 
         if (value == null)
             System.out.println("Validation passed");
 
-        if (value.equals("ok")) {
+        if ("ok".equals(value)) {
             System.out.println("Still passed");
         }
     }
 
-
     static void main() {
         System.out.println("Sum 3+4: " + sum(3, 4));
-        VeryBadMethod();
+        veryBadMethod();
     }
 }
