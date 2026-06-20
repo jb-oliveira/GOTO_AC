@@ -8,35 +8,10 @@ public class Main {
         return a + b;
     }
 
-    public static void NullPointer() {
+    public static void putaquePariu(int a, int b) {
         String str = null;
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        if (str != null) {
-            IO.println(str.length());
-        }
+        IO.println(str.length());        
     }
-
-    public static void ArrayIndexOutOfBounds() {
-        int[] arr = new int[5];
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        int index = 10;
-        if (index < arr.length) {
-            IO.println(arr[index]);
-        }
-    }
-
-    public static void ArithmeticException() {
-        int a = 10;
-        int b = 0;
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        if (b != 0) {
-            IO.println(a / b);
-        }
-    }
-
 
     static void main() {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
