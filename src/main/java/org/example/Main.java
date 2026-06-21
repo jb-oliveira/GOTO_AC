@@ -9,13 +9,9 @@ public class Main {
     public static void VeryBadMethod() {
         String value = null;
 
-        if(value.equals("ok")) {
+        if("ok".equals(value)) {
             IO.print("ok");
         }        
-    }
-
-    private void unusedMethod() {
-        // should be removed
     }
 
     static void main() {
