@@ -1,2 +1,1 @@
-# GOTO_AC
-Goto Acceptance criteria
+# POC
