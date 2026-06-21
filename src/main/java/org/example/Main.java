@@ -6,20 +6,16 @@ public class Main {
         return a + b;
     }
 
-    public static void VeryBadMethod() {
+    public static void veryBadMethod() {
         String value = null;
-        if (value.equals("test")) {
-            System.out.println("This is a bad method!");    
+        if ("test".equals(value)) {
+            System.out.println("This is a bad method!");
         }
     }
 
-    private void unusedMethod() {
-        System.out.println("This method is never used.");
-    }
-    
     static void main() {
         int result = sum(5, 10);
         System.out.println("The sum is: " + result);
-        VeryBadMethod();
+        veryBadMethod();
     }
 }
