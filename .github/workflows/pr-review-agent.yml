@@ -20,16 +20,12 @@ jobs:
 
       - name: Install Copilot CLI
         run: |
-          sudo apt update
-          sudo apt install gh -y
           curl -fsSL https://gh.io/copilot-install | bash
       
       - name: Authenticate and Execute
         env:
-          PAT: ${{ secrets.COPILOT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         run: | 
-          echo "${PAT}" | gh auth login --with-token
-
           prompt=$({
             cat .github/agents/pr-agent.md
             echo "=== PR DIFF ==="
