@@ -22,6 +22,9 @@ Bad code patterns to target (priority):
 3. Obvious dead or commented-out executable code blocks that reduce clarity.
 4. Straightforward defensive checks around collection access/iteration when nullability is apparent.
 5. Small, local cleanup that does not alter public behavior.
+6. Simple formatting issues that improve readability without changing code structure.
+7. Clear code smells that can be confidently refactored in a single step without broad impact.
+8. Update Method naming convention errors to match project standards (e.g., camelCase for Java).
 
 Safety boundaries (must follow):
 
