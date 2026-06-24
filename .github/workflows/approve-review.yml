@@ -1,0 +1,12 @@
+name: Manual Dev Deploy
+
+# This configuration makes the workflow purely manual
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a manual task
+        run: echo "Review Approved. Proceeding with deployment..."
