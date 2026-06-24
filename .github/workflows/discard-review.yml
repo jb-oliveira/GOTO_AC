@@ -1,0 +1,12 @@
+name: Discard Review Workflow
+
+# This configuration makes the workflow purely manual
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a manual task
+        run: echo "Review Discarded. Deployment aborted..."
